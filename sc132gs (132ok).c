@@ -187,154 +187,97 @@ static const struct regval sc132gs_global_regs1[] = {
 		{ REG_NULL, 0x00 }
 };
 static const struct regval sc132gs_global_regs[] = {
-	//{ 0x0103,0x01 },
-	{ 0x0100,0x00 },
-	{ 0x36e9,0x80 },	///	
-	{ 0x3018,0x72 }, // bitsel_man mode  10bit  >> 0x0a   	8bit >> 0x08
-	{ 0x3019,0x0e }, // phy bit mode 	  10bit  >> 0x20      8bit >> 0x00
-	{ 0x301a,0xb4},
-	{ 0x3031,0x0a },
-	{ 0x3032,0x60 },
-	{ 0x3207,0x17 },
-	{ 0x320c,0x02 },
-	{ 0x320d,0xa0 },
-	{ 0x320e,0x08 },
-	{ 0x320f,0x4a },
-	{ 0x3250,0xcc },
-	{ 0x3251,0x02 },
-	{ 0x3252,0x08 },
-	{ 0x3253,0x45 },
-	{ 0x3254,0x05 },
-	{ 0x3255,0x3b },
-	{ 0x3306,0x78 },
-	{ 0x330a,0x00 },
-	{ 0x330b,0xc8 },
-	{ 0x330f,0x24 },
-	{ 0x3314,0x80 },
-	{ 0x3315,0x40 },
-	{ 0x3317,0xf0 },
-	{ 0x331f,0x12 },
-	{ 0x3364,0x00 },
-	{ 0x3385,0x41 },
-	{ 0x3387,0x41 },
-	{ 0x3389,0x09 },
-	{ 0x33ab,0x00 },
-	{ 0x33ac,0x00 },
-	{ 0x33b1,0x03 },
-	{ 0x33b2,0x12 },
-	{ 0x33f8,0x02 },
-	{ 0x33fa,0x01 },
-	{ 0x3409,0x08 },
-	{ 0x34f0,0xc0 },
-	{ 0x34f1,0x20 },
-	{ 0x34f2,0x03 },
-	{ 0x3622,0xf5 },
-	{ 0x3630,0x5c },
-	{ 0x3631,0x80 },
-	{ 0x3633,0x32 },
-	{ 0x3638,0x2a },
-	{ 0x3639,0x07 },
-	{ 0x363b,0x48 },
-	{ 0x363c,0x83 },
-	{ 0x363d,0x10 },
-	{ 0x36ea,0x3a },
-	{ 0x36fa,0x25 },
-	{ 0x36fb,0x05 },
-	{ 0x36fd,0x04 },
-	{ 0x3901,0x05 },
-	{ 0x3904,0x04 },
-	{ 0x3908,0x91 },
-	{ 0x391e,0x00 },
-	{ 0x3e01,0x53 },
-	{ 0x3e02,0xe0 },
-	{ 0x3e09,0x20 },
-	{ 0x3e0e,0xd2 },
-	{ 0x3e14,0xb0 },
-	{ 0x3e1e,0x7c },
-	{ 0x4418,0x38 },
-	{ 0x4503,0x10 },
-	{ 0x4837,0x14 },
-	{ 0x5780,0x67 },
-	{ 0x5784,0x10 },
-	{ 0x5785,0x06 },
-	{ 0x5787,0x02 },
-	{ 0x5788,0x00 },
-	{ 0x5789,0x00 },
-	{ 0x578a,0x02 },
-	{ 0x578b,0x00 },
-	{ 0x578c,0x00 },
-	{ 0x5790,0x00 },
-	{ 0x5791,0x00 },
-	{ 0x5792,0x00 },
-	{ 0x5793,0x00 },
-	{ 0x5794,0x00 },
-	{ 0x5795,0x00 },
-	{ 0x5799,0x04 },
-	
-	{ 0x33fa, 0x01 }, // gain < 2
-	{ 0x3317, 0xf0 }, // gain < 2
-	{ 0x33f8,0x02},
-	{ 0x3314,0x80},
-	{ 0x33fa,0x02},
-	{ 0x3317,0x00},
-	{0x0100,0x01},
-
-/// zheng cuo wu
-/*	{0x0100, 0x00},
-	{ 0x3018,0x72 }, 
-	//{ 0x3031,0x0a }, // MIPI 输出数据模式 (0a>10)
-	{ 0x3037,0x00 }, // PHY 数据模式 (20>10)
-{0x36e9, 0x80},
-{0x36f9, 0x80},
-{0x3207, 0x17},
-{0x320c, 0x02},
-{0x320d, 0xee},
+	/// part 3
+{0x0100, 0x00},
+{0x36e9, 0x20},
+{0x3018, 0x72},
+{0x3019, 0x00},
+{0x301a, 0xf0},
+{0x3031, 0x0a},
+{0x3032, 0x20},
+{0x3207, 0x1f},
+{0x320c, 0x03},
+{0x320d, 0xe8},
 {0x320e, 0x05},
 {0x320f, 0x46},
-{0x3250, 0xc0},
-{0x3251, 0x02},
-{0x3252, 0x05},
-{0x3253, 0x41},
-{0x3254, 0x05},
-{0x3255, 0x3b},
-{0x3306, 0x78},
-{0x330a, 0x00},
-{0x330b, 0xb0},
-{0x3315, 0x40},
-{0x3317, 0x88},
-{0x3385, 0x41},
-{0x3387, 0x41},
-{0x3389, 0x01},
-{0x33b2, 0x12},
-{0x34f2, 0x00},
-{0x3622, 0xf5},
-{0x3630, 0x8c},
-{0x3631, 0xa4},
-{0x3633, 0x32},
-{0x3638, 0x2f},
-{0x3639, 0x0a},
-{0x363b, 0x48},
-{0x363c, 0x83},
-{0x363d, 0x10},
-{0x36ea, 0x37},
-{0x36fa, 0x25},
-{0x36fb, 0x05},
-{0x36fd, 0x04},
-{0x3908, 0x91},
-{0x3e00, 0x00},
-{0x3e01, 0x53},
-{0x3e02, 0xe0},
-{0x3e03, 0x0b},
-{0x3e06, 0x00},
-{0x3e07, 0x80},
-{0x3e08, 0x03},
+{0x3250, 0xff},
+{0x3251, 0x80},
+{0x3252, 0x00},
+{0x3253, 0x00},
+{0x3254, 0x00},
+{0x3255, 0x00},
+{0x3306, 0x98},
+{0x330a, 0x01},
+{0x330b, 0x58},
+{0x330f, 0x80},
+{0x3314, 0x50},
+{0x3315, 0x58},
+{0x3317, 0xb8},
+{0x331f, 0x02},
+{0x3364, 0x00},
+{0x3385, 0x39},
+{0x3387, 0x39},
+{0x3389, 0x21},
+{0x33ab, 0x01},
+{0x33ac, 0x8f},
+{0x33b1, 0x02},
+{0x33b2, 0x11},
+{0x33f8, 0x03},
+{0x33fa, 0x01},
+{0x3409, 0x10},
+{0x34f0, 0xc8},
+{0x34f1, 0x0c},
+{0x34f2, 0x03},
+{0x3622, 0xe1},
+{0x3630, 0x00},
+{0x3631, 0x88},
+{0x3633, 0x44},
+{0x3638, 0x29},
+{0x3639, 0x0c},
+{0x363b, 0x46},
+{0x363c, 0xc7},
+{0x363d, 0x00},
+{0x36ea, 0x3a},
+{0x36fa, 0x37},
+{0x36fb, 0x04},
+{0x36fd, 0x24},
+{0x3901, 0x02},
+{0x3904, 0x04},
+{0x3908, 0xc0},
+{0x391e, 0x0f},
+{0x3e01, 0x02},
+{0x3e02, 0x00},
 {0x3e09, 0x10},
+{0x3e0e, 0x02},
+{0x3e14, 0x30},
+{0x3e1e, 0x74},
 {0x4418, 0x1c},
-{0x4837, 0x21},
-{0x5799, 0x00},
-{0x36e9, 0x20},
-{0x36f9, 0x24},*/
-//{0x0100, 0x01},
+{0x4503, 0x20},
+{0x4837, 0x26},
+{0x5780, 0x67},
+{0x5784, 0x06},
+{0x5785, 0x03},
+{0x5787, 0x08},
+{0x5788, 0x03},
+{0x5789, 0x00},
+{0x578a, 0x08},
+{0x578b, 0x02},
+{0x578c, 0x00},
+{0x5790, 0x10},
+{0x5791, 0x06},
+{0x5792, 0x00},
+{0x5793, 0x10},
+{0x5794, 0x04},
+{0x5795, 0x00},
+{0x5799, 0x06},
+{0x33fa, 0x01},
+{0x3317, 0xb8},
+{0x33f8, 0x03},
+{0x3314, 0x50},
+{0x33fa, 0x01},
+{0x3317, 0xb8},
+{0x320f, 0x46},
+{0x0100, 0x01},
 	{ REG_NULL, 0x00 }
 };
 
@@ -412,8 +355,8 @@ static int sc132gs_write_array(struct i2c_client *client,
 		ret = sc132gs_write_reg(client, regs[i].addr,
 					SC132GS_REG_VALUE_08BIT, regs[i].val);
 
-					msleep(8);
-					usleep_range(3,9);
+					//msleep(8);
+					//usleep_range(3,9);
 	}
 
 	return ret;
@@ -601,7 +544,7 @@ static long sc132gs_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 	struct sc132gs *sc132gs = to_sc132gs(sd);
 	long ret = 0;
 	u32 stream = 0;
-
+	printk("set sc132gs_ioctl  cmd %u\n", cmd);
 	switch (cmd) {
 	case RKMODULE_GET_MODULE_INFO:
 		sc132gs_get_module_inf(sc132gs, (struct rkmodule_inf *)arg);
@@ -609,21 +552,26 @@ static long sc132gs_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 	case RKMODULE_SET_QUICK_STREAM:
 
 		stream = *((u32 *)arg);
-
+		
+		printk("set SC132GS_REG_CTRL_MODE  stream %d\n", stream);
 		if (stream)
 		{	
 				ret = sc132gs_write_reg(sc132gs->client, 0x36e9,
 				SC132GS_REG_VALUE_08BIT, 0x24);
 				ret = sc132gs_write_reg(sc132gs->client, 0x36f9,
 				SC132GS_REG_VALUE_08BIT, 0x24);
+				msleep(9);
 			ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_CTRL_MODE,
 				SC132GS_REG_VALUE_08BIT, SC132GS_MODE_STREAMING);
+				msleep(9);
+				
 		}
 		else
 			ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_CTRL_MODE,
 				SC132GS_REG_VALUE_08BIT, SC132GS_MODE_SW_STANDBY);
 		break;
 	default:
+	printk("sc132gs_ioctl ret = -ENOIOCTLCMD\n");
 		ret = -ENOIOCTLCMD;
 		break;
 	}
@@ -639,7 +587,7 @@ static long sc132gs_compat_ioctl32(struct v4l2_subdev *sd,
 	struct rkmodule_inf *inf;
 	long ret;
 	u32 stream = 0;
-
+printk("set sc132gs_compat_ioctl32  cmd %d\n", cmd);
 	switch (cmd) {
 	case RKMODULE_GET_MODULE_INFO:
 		inf = kzalloc(sizeof(*inf), GFP_KERNEL);
@@ -731,21 +679,19 @@ static int __sc132gs_start_stream(struct sc132gs *sc132gs)
 	/// fuwei
 	ret = sc132gs_write_reg(sc132gs->client, 0x0103,
 					SC132GS_REG_VALUE_08BIT, 0x01);
-					msleep(38);
+					msleep(138);
 					usleep_range(3,9);
-
+	
 	ret = sc132gs_write_array(sc132gs->client, sc132gs->cur_mode->reg_list);
-
+	printk("sc132gs_write_array=%d\n", ret);
 	if (ret)
 		return ret;
 
 	/* In case these controls are set before streaming */
 	mutex_unlock(&sc132gs->mutex);
-
 	ret = v4l2_ctrl_handler_setup(&sc132gs->ctrl_handler);
-	
 	mutex_lock(&sc132gs->mutex);
-	
+	printk("v4l2_ctrl_handler_setup=%d\n", ret);
 	if (ret)
 		return ret;
 
@@ -876,21 +822,14 @@ static int __sc132gs_power_on(struct sc132gs *sc132gs)
 	}
 
 	if (!IS_ERR(sc132gs->reset_gpio)) {
-		usleep_range(10 * 1000, 20 * 1000);
 		gpiod_set_value_cansleep(sc132gs->reset_gpio, 1);
-		usleep_range(10 * 1000, 20 * 1000);
-		printk("gpiod_set_value_cansleep(sc132gs->reset_gpio, 1)\n");
-		//gpiod_set_value_cansleep(sc132gs->reset_gpio, 0);
 		//usleep_range(10 * 1000, 20 * 1000);
+		printk("gpiod_set_value_cansleep(sc132gs->reset_gpio, 1)\n");
 		}
 
 
 	if (!IS_ERR(sc132gs->pwdn_gpio))
 		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1);
-
-		
-
-
 
 	/* 8192 cycles prior to first SCCB transaction */
 	delay_us = sc132gs_cal_delay(8192);
@@ -1041,7 +980,7 @@ static int sc132gs_set_ctrl(struct v4l2_ctrl *ctrl)
 	struct i2c_client *client = sc132gs->client;
 	s64 max;
 	int ret = 0;
-//return 0;
+
 	/* Propagate change of current control to all related controls */
 	switch (ctrl->id) {
 	case V4L2_CID_VBLANK:
@@ -1067,9 +1006,10 @@ static int sc132gs_set_ctrl(struct v4l2_ctrl *ctrl)
 		ret = sc132gs_set_ctrl_gain(sc132gs, ctrl->val);
 		break;
 	case V4L2_CID_VBLANK:
-		ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_VTS,
+		/*ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_VTS,
 					SC132GS_REG_VALUE_16BIT,
-					ctrl->val + sc132gs->cur_mode->height);
+					ctrl->val + sc132gs->cur_mode->height);*/
+					printk("ctrl->val=%d, sc132gs->cur_mode->height=%d tatol=%d\n",ctrl->val, sc132gs->cur_mode->height,ctrl->val + sc132gs->cur_mode->height);
 		break;
 	case V4L2_CID_TEST_PATTERN:
 		ret = sc132gs_enable_test_pattern(sc132gs, ctrl->val);
@@ -1118,24 +1058,29 @@ static int sc132gs_initialize_controls(struct sc132gs *sc132gs)
 				h_blank, h_blank, 1, h_blank);
 	if (sc132gs->hblank)
 		sc132gs->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+
 	vblank_def = mode->vts_def - mode->height;
 	sc132gs->vblank = v4l2_ctrl_new_std(handler, &sc132gs_ctrl_ops,
 				V4L2_CID_VBLANK, vblank_def,
 				SC132GS_VTS_MAX - mode->height,
 				1, vblank_def);
+
 	exposure_max = mode->vts_def - 6;
 	sc132gs->exposure = v4l2_ctrl_new_std(handler, &sc132gs_ctrl_ops,
 				V4L2_CID_EXPOSURE, SC132GS_EXPOSURE_MIN,
 				exposure_max, SC132GS_EXPOSURE_STEP,
 				mode->exp_def);
+
 	sc132gs->anal_gain = v4l2_ctrl_new_std(handler, &sc132gs_ctrl_ops,
 				V4L2_CID_ANALOGUE_GAIN, ANALOG_GAIN_MIN,
 				ANALOG_GAIN_MAX, ANALOG_GAIN_STEP,
 				ANALOG_GAIN_DEFAULT);
+
 	sc132gs->test_pattern = v4l2_ctrl_new_std_menu_items(handler,
 				&sc132gs_ctrl_ops, V4L2_CID_TEST_PATTERN,
 				ARRAY_SIZE(sc132gs_test_pattern_menu) - 1,
 				0, 0, sc132gs_test_pattern_menu);
+
 	if (handler->error) {
 		ret = handler->error;
 		dev_err(&sc132gs->client->dev,
