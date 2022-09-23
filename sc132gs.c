@@ -57,15 +57,19 @@
 
 #define DRIVER_VERSION			KERNEL_VERSION(0, 0x01, 0x05)
 #ifndef V4L2_CID_DIGITAL_GAIN
-#define V4L2_CID_DIGITAL_GAIN		V4L2_CID_GAIN
+#define V4L2_CID_DIGITAL_GAIN		V4L2_CID_GAIN 
 #endif
 
 //#define SC132GS_PIXEL_RATE		(72 * 1000 * 1000)
-#define SC132GS_PIXEL_RATE  (243 * 100 * 1000)
+//#define SC132GS_PIXEL_RATE  	(720 * 1000 * 1000)
 #define SC132GS_XVCLK_FREQ		24000000
 
+#define SC132GS_PIXEL_RATE   (243 * 1000 * 1000)
+//#define SC132GS_XVCLK_FREQ  27000000
+#define SC132GS_LINK_FREQ_360MHZ (303.75* 1000* 1000)
+
 //#define CHIP_ID				0x0132
-#define CHIP_ID				0x0130
+#define CHIP_ID					0x0132
 #define SC132GS_REG_CHIP_ID		0x3107 
 
 #define SC132GS_REG_CTRL_MODE		0x0100
@@ -76,22 +80,22 @@
 #define SC132GS_REG_EXPOSURE		0x3e01
 #define	SC132GS_EXPOSURE_MIN		6
 #define	SC132GS_EXPOSURE_STEP		1
-#define SC132GS_VTS_MAX			0xffff
+#define SC132GS_VTS_MAX				0xffff
 
 #define SC132GS_REG_COARSE_AGAIN	0x3e08
 #define SC132GS_REG_FINE_AGAIN		0x3e09
-#define	ANALOG_GAIN_MIN			0x20
-#define	ANALOG_GAIN_MAX			0x391
-#define	ANALOG_GAIN_STEP		1
-#define	ANALOG_GAIN_DEFAULT		0x20
+#define	ANALOG_GAIN_MIN				0x20
+#define	ANALOG_GAIN_MAX				0x391
+#define	ANALOG_GAIN_STEP			1
+#define	ANALOG_GAIN_DEFAULT			0x20
 
-#define SC132GS_REG_TEST_PATTERN	0x4501
-#define	SC132GS_TEST_PATTERN_ENABLE	0xcc
+#define SC132GS_REG_TEST_PATTERN		0x4501
+#define	SC132GS_TEST_PATTERN_ENABLE		0xcc
 #define	SC132GS_TEST_PATTERN_DISABLE	0xc4
 
-#define SC132GS_REG_VTS			0x320e
+#define SC132GS_REG_VTS				0x320e
 
-#define REG_NULL			0xFFFF
+#define REG_NULL					0xFFFF
 
 #define SC132GS_REG_VALUE_08BIT		1
 #define SC132GS_REG_VALUE_16BIT		2
@@ -106,14 +110,19 @@
 #define OF_CAMERA_PINCTRL_STATE_SLEEP	"rockchip,camera_sleep"
 
 #define SC132GS_LANES			4
-//#define SC132GS_LANES			1
 //#define SC132GS_BITS_PER_SAMPLE		8
 #define SC132GS_BITS_PER_SAMPLE		10
 
+//static const char * const sc132gs_supply_names[] = {
+//	"avdd",		/* Analog power */
+//	"dovdd",	/* Digital I/O power */
+//	"dvdd",		/* Digital core power */
+//};
+
 static const char * const sc132gs_supply_names[] = {
-	"avdd",		/* Analog power */
 	"dovdd",	/* Digital I/O power */
 	"dvdd",		/* Digital core power */
+	"avdd",		/* Analog power */
 };
 
 #define SC132GS_NUM_SUPPLIES ARRAY_SIZE(sc132gs_supply_names)
@@ -137,6 +146,9 @@ struct sc132gs {
 	struct i2c_client	*client;
 	struct clk		*xvclk;
 	struct gpio_desc	*pwdn_gpio;
+	struct gpio_desc	*reset_gpio;
+	struct gpio_desc	*csien_gpio;
+	struct gpio_desc	*other_gpio;
 	struct regulator_bulk_data supplies[SC132GS_NUM_SUPPLIES];
 	struct pinctrl		*pinctrl;
 	struct pinctrl_state	*pins_default;
@@ -169,230 +181,119 @@ struct sc132gs {
  * framelength 2122(0x084a)
  * grabwindow_width 1080
  * grabwindow_height 1280
- * mipi 1 lane
- * max_framerate 30fps
- * mipi_datarate per lane 720Mbps
+ * mipi 4 lane
+ * max_framerate 60fps
+ * mipi_datarate per lane ?Mbps
  */
 static const struct regval sc132gs_global_regs1[] = {
-	{0x0103, 0x01},
-	{0x0100, 0x00},
-
-	//PLL bypass
-	{0x36e9, 0x80},
-	{0x36f9, 0x80},
-
-	{0x3018, 0x12},
-	{0x3019, 0x0e},
-	{0x301a, 0xb4},
-	{0x3031, 0x08},
-	{0x3032, 0x60},
-	{0x3038, 0x44},
-	{0x3207, 0x17},
-	{0x320c, 0x06},
-	{0x320d, 0xa0},
-	{0x320e, 0x08},
-	{0x320f, 0x4a},
-	{0x3250, 0xcc},
-	{0x3251, 0x02},
-	{0x3252, 0x08},
-	{0x3253, 0x45},
-	{0x3254, 0x05},
-	{0x3255, 0x3b},
-	{0x3306, 0x78},
-	{0x330a, 0x00},
-	{0x330b, 0xc8},
-	{0x330f, 0x24},
-	{0x3314, 0x80},
-	{0x3315, 0x40},
-	{0x3317, 0xf0},
-	{0x331f, 0x12},
-	{0x3364, 0x00},
-	{0x3385, 0x41},
-	{0x3387, 0x41},
-	{0x3389, 0x09},
-	{0x33ab, 0x00},
-	{0x33ac, 0x00},
-	{0x33b1, 0x03},
-	{0x33b2, 0x12},
-	{0x33f8, 0x02},
-	{0x33fa, 0x01},
-	{0x3409, 0x08},
-	{0x34f0, 0xc0},
-	{0x34f1, 0x20},
-	{0x34f2, 0x03},
-	{0x3622, 0xf5},
-	{0x3630, 0x5c},
-	{0x3631, 0x80},
-	{0x3632, 0xc8},
-	{0x3633, 0x32},
-	{0x3638, 0x2a},
-	{0x3639, 0x07},
-	{0x363b, 0x48},
-	{0x363c, 0x83},
-	{0x363d, 0x10},
-	{0x36ea, 0x3a},
-	{0x36fa, 0x25},
-	{0x36fb, 0x05},
-	{0x36fd, 0x04},
-	{0x3900, 0x11},
-	{0x3901, 0x05},
-	{0x3902, 0xc5},
-	{0x3904, 0x04},
-	{0x3908, 0x91},
-	{0x391e, 0x00},
-	{0x3e01, 0x53},
-	{0x3e02, 0xe0},
-	{0x3e09, 0x20},
-	{0x3e0e, 0xd2},
-	{0x3e14, 0xb0},
-	{0x3e1e, 0x7c},
-	{0x3e26, 0x20},
-	{0x4418, 0x38},
-	{0x4503, 0x10},
-	{0x4837, 0x14},
-	{0x5000, 0x0e},
-	{0x540c, 0x51},
-	{0x550f, 0x38},
-	{0x5780, 0x67},
-	{0x5784, 0x10},
-	{0x5785, 0x06},
-	{0x5787, 0x02},
-	{0x5788, 0x00},
-	{0x5789, 0x00},
-	{0x578a, 0x02},
-	{0x578b, 0x00},
-	{0x578c, 0x00},
-	{0x5790, 0x00},
-	{0x5791, 0x00},
-	{0x5792, 0x00},
-	{0x5793, 0x00},
-	{0x5794, 0x00},
-	{0x5795, 0x00},
-	{0x5799, 0x04},
-
-	{0x3037, 0x00},
-
-	//PLL set
-	{0x36e9, 0x24},
-	{0x36f9, 0x24},
-
-	{0x0100, 0x01},
-	{REG_NULL, 0x00},
+		{ REG_NULL, 0x00 }
 };
-
-static const struct regval sc132gs_global_regs[] =
-{
-{0x0100,0x00},
-{0x3000,0x00},
-{0x3001,0x00},
-{0x3018,0x70},
-{0x3019,0x00},
-{0x3022,0x10},
-{0x302b,0x80},
-{0x3030,0x04},
-{0x3031,0x0a},
-{0x3034,0x0d},
-{0x3035,0x2a},
-{0x3038,0x44},
-{0x3039,0x53},
-{0x303a,0x77},
-{0x303b,0x02},
-{0x303c,0x04},
-{0x303f,0x11},
-{0x3202,0x00},
-{0x3203,0x00},
-{0x3205,0x8b},
-{0x3206,0x02},
-{0x3207,0x04},
-{0x320a,0x04},
-{0x320b,0x00},
-{0x320c,0x02},
-{0x320d,0xee},
-{0x320e,0x02},
-{0x320f,0x1c},
-{0x3211,0x0c},
-{0x3213,0x04},
-{0x3300,0x20},
-{0x3302,0x0c},
-{0x3306,0x48},
-{0x3308,0x50},
-{0x330a,0x00},
-{0x330b,0x8c},
-{0x330e,0x1a},
-{0x3310,0xf0},
-{0x3311,0x10},
-{0x3319,0xe8},
-{0x3333,0x90},
-{0x3334,0x30},
-{0x3348,0x02},
-{0x3349,0xee},
-{0x334a,0x02},
-{0x334b,0xe8},
-{0x335d,0x00},
-{0x3380,0xff},
-{0x3382,0xe0},
-{0x3383,0x0a},
-{0x3384,0xe4},
-{0x3400,0x53},
-{0x3416,0x31},
-{0x3518,0x07},
-{0x3519,0xc8},
-{0x3620,0x23},
-{0x3621,0x0a},
-{0x3622,0x06},
-{0x3623,0x14},
-{0x3624,0x40},
-{0x3625,0x00},
-{0x3626,0x00},
-{0x3627,0x01},
-{0x3630,0x63},
-{0x3632,0x74},
-{0x3633,0x63},
-{0x3634,0xff},
-{0x3635,0x44},
-{0x3638,0x82},
-{0x3639,0x74},
-{0x363a,0x24},
-{0x363b,0x00},
-{0x3640,0x03},
-{0x3658,0x9a},
-{0x3663,0x88},
-{0x3664,0x07},
-{0x3c00,0x41},
-{0x3d08,0x00},
-{0x3e01,0x1a},
-{0x3e02,0x00},
-{0x3e03,0x0b},
-{0x3e08,0x03},
-{0x3e09,0x20},
-{0x3e0e,0x00},
-{0x3e0f,0x14},
-{0x3e14,0xb0},
-{0x3f08,0x04},
-{0x4501,0xc0},
-{0x4502,0x16},
-{0x5000,0x01},
-{0x5b00,0x02},
-{0x5b01,0x03},
-{0x5b02,0x01},
-{0x5b03,0x01},
-{0x0100,0x01},
-{0x363a,0x24},
-{0x3630,0x63},
-	{REG_NULL, 0x00},
+static const struct regval sc132gs_global_regs[] = {
+	/// part 3
+{0x0100, 0x00},
+{0x36e9, 0x20},
+{0x3018, 0x72},
+{0x3019, 0x00},
+{0x301a, 0xf0},
+{0x3031, 0x0a},
+{0x3032, 0x20},
+{0x3207, 0x1f},
+{0x320c, 0x03},
+{0x320d, 0xe8},
+{0x320e, 0x05},
+{0x320f, 0x46},
+{0x3250, 0xff},
+{0x3251, 0x80},
+{0x3252, 0x00},
+{0x3253, 0x00},
+{0x3254, 0x00},
+{0x3255, 0x00},
+{0x3306, 0x98},
+{0x330a, 0x01},
+{0x330b, 0x58},
+{0x330f, 0x80},
+{0x3314, 0x50},
+{0x3315, 0x58},
+{0x3317, 0xb8},
+{0x331f, 0x02},
+{0x3364, 0x00},
+{0x3385, 0x39},
+{0x3387, 0x39},
+{0x3389, 0x21},
+{0x33ab, 0x01},
+{0x33ac, 0x8f},
+{0x33b1, 0x02},
+{0x33b2, 0x11},
+{0x33f8, 0x03},
+{0x33fa, 0x01},
+{0x3409, 0x10},
+{0x34f0, 0xc8},
+{0x34f1, 0x0c},
+{0x34f2, 0x03},
+{0x3622, 0xe1},
+{0x3630, 0x00},
+{0x3631, 0x88},
+{0x3633, 0x44},
+{0x3638, 0x29},
+{0x3639, 0x0c},
+{0x363b, 0x46},
+{0x363c, 0xc7},
+{0x363d, 0x00},
+{0x36ea, 0x3a},
+{0x36fa, 0x37},
+{0x36fb, 0x04},
+{0x36fd, 0x24},
+{0x3901, 0x02},
+{0x3904, 0x04},
+{0x3908, 0xc0},
+{0x391e, 0x0f},
+{0x3e01, 0x02},
+{0x3e02, 0x00},
+{0x3e09, 0x10},
+{0x3e0e, 0x02},
+{0x3e14, 0x30},
+{0x3e1e, 0x74},
+{0x4418, 0x1c},
+{0x4503, 0x20},
+{0x4837, 0x26},
+{0x5780, 0x67},
+{0x5784, 0x06},
+{0x5785, 0x03},
+{0x5787, 0x08},
+{0x5788, 0x03},
+{0x5789, 0x00},
+{0x578a, 0x08},
+{0x578b, 0x02},
+{0x578c, 0x00},
+{0x5790, 0x10},
+{0x5791, 0x06},
+{0x5792, 0x00},
+{0x5793, 0x10},
+{0x5794, 0x04},
+{0x5795, 0x00},
+{0x5799, 0x06},
+{0x33fa, 0x01},
+{0x3317, 0xb8},
+{0x33f8, 0x03},
+{0x3314, 0x50},
+{0x33fa, 0x01},
+{0x3317, 0xb8},
+{0x320f, 0x46},
+{0x0100, 0x01},
+	{ REG_NULL, 0x00 }
 };
 
 static const struct sc132gs_mode supported_modes[] = {
 	{
-		.width = 1280,
-		.height = 1024,
+		.width = 1080 ,
+		.height = 1280 ,
 		.max_fps = {
 			.numerator = 10000,
 			.denominator = 600000,
 		},
 		.exp_def = 0x0148,
-		.hts_def = 0x06a0,
-		.vts_def = 0x084a,
+		.hts_def = 0x0435,
+		.vts_def = 0x0515,
 		//.hts_def = 0x02ee,
   		//.vts_def = 0x021c,
 		.reg_list = sc132gs_global_regs,
@@ -407,7 +308,8 @@ static const char * const sc132gs_test_pattern_menu[] = {
 	"Vertical Color Bar Type 4"
 };
 
-#define SC132GS_LINK_FREQ_360MHZ	(360 * 1000 * 1000)
+//#define SC132GS_LINK_FREQ_360MHZ	(243 * 1000 * 1000)
+//#define SC132GS_LINK_FREQ_360MHZ	(360 * 1000 * 1000)
 
 static const s64 link_freq_menu_items[] = {
 	SC132GS_LINK_FREQ_360MHZ
@@ -438,6 +340,7 @@ static int sc132gs_write_reg(struct i2c_client *client,
 		buf[buf_i++] = val_p[val_i++];
 
 	ret = i2c_master_send(client, buf, len + 2);
+	printk("reg=0x%x, val=0x%x, ret=%d, len=%d\n", reg, val, ret, len);
 	if (ret != len + 2)
 		return -EIO;
 
@@ -453,6 +356,9 @@ static int sc132gs_write_array(struct i2c_client *client,
 	for (i = 0; ret == 0 && regs[i].addr != REG_NULL; i++) {
 		ret = sc132gs_write_reg(client, regs[i].addr,
 					SC132GS_REG_VALUE_08BIT, regs[i].val);
+
+					//msleep(8);
+					//usleep_range(3,9);
 	}
 
 	return ret;
@@ -479,12 +385,13 @@ static int sc132gs_read_reg(struct i2c_client *client,
 	msgs[0].buf = (u8 *)&reg_addr_be;
 
 	/* Read data from register */
-	msgs[1].addr = client->addr;
+	msgs[1].addr = client->addr; 
 	msgs[1].flags = I2C_M_RD;
 	msgs[1].len = len;
 	msgs[1].buf = &data_be_p[4 - len];
 
 	ret = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
+	printk("sc132gs_read_reg reg=%x val=%x, ret=%d\n", reg, *val, ret);
 	if (ret != ARRAY_SIZE(msgs))
 		return -EIO;
 
@@ -640,7 +547,7 @@ static long sc132gs_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 	struct sc132gs *sc132gs = to_sc132gs(sd);
 	long ret = 0;
 	u32 stream = 0;
-
+	printk("set sc132gs_ioctl  cmd %u\n", cmd);
 	switch (cmd) {
 	case RKMODULE_GET_MODULE_INFO:
 		sc132gs_get_module_inf(sc132gs, (struct rkmodule_inf *)arg);
@@ -648,15 +555,26 @@ static long sc132gs_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 	case RKMODULE_SET_QUICK_STREAM:
 
 		stream = *((u32 *)arg);
-
+		
+		printk("set SC132GS_REG_CTRL_MODE  stream %d\n", stream);
 		if (stream)
+		{	
+				ret = sc132gs_write_reg(sc132gs->client, 0x36e9,
+				SC132GS_REG_VALUE_08BIT, 0x24);
+				ret = sc132gs_write_reg(sc132gs->client, 0x36f9,
+				SC132GS_REG_VALUE_08BIT, 0x24);
+				msleep(9);
 			ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_CTRL_MODE,
 				SC132GS_REG_VALUE_08BIT, SC132GS_MODE_STREAMING);
+				msleep(9);
+				
+		}
 		else
 			ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_CTRL_MODE,
 				SC132GS_REG_VALUE_08BIT, SC132GS_MODE_SW_STANDBY);
 		break;
 	default:
+	printk("sc132gs_ioctl ret = -ENOIOCTLCMD\n");
 		ret = -ENOIOCTLCMD;
 		break;
 	}
@@ -672,7 +590,7 @@ static long sc132gs_compat_ioctl32(struct v4l2_subdev *sd,
 	struct rkmodule_inf *inf;
 	long ret;
 	u32 stream = 0;
-
+printk("set sc132gs_compat_ioctl32  cmd %d\n", cmd);
 	switch (cmd) {
 	case RKMODULE_GET_MODULE_INFO:
 		inf = kzalloc(sizeof(*inf), GFP_KERNEL);
@@ -761,14 +679,22 @@ static int __sc132gs_start_stream(struct sc132gs *sc132gs)
 {
 	int ret;
 
+	/// fuwei
+	ret = sc132gs_write_reg(sc132gs->client, 0x0103,
+					SC132GS_REG_VALUE_08BIT, 0x01);
+					msleep(138);
+					usleep_range(3,9);
+	
 	ret = sc132gs_write_array(sc132gs->client, sc132gs->cur_mode->reg_list);
+	printk("sc132gs_write_array=%d\n", ret);
 	if (ret)
 		return ret;
 
 	/* In case these controls are set before streaming */
 	mutex_unlock(&sc132gs->mutex);
-	ret = v4l2_ctrl_handler_setup(&sc132gs->ctrl_handler);	
-	mutex_lock(&sc132gs->mutex);	
+	ret = v4l2_ctrl_handler_setup(&sc132gs->ctrl_handler);
+	mutex_lock(&sc132gs->mutex);
+	printk("v4l2_ctrl_handler_setup=%d\n", ret);
 	if (ret)
 		return ret;
 
@@ -898,8 +824,40 @@ static int __sc132gs_power_on(struct sc132gs *sc132gs)
 		goto disable_clk;
 	}
 
+	/*if (!IS_ERR(sc132gs->reset_gpio)) {
+		gpiod_set_value_cansleep(sc132gs->reset_gpio, 1);
+		usleep_range(10 * 1000, 20 * 1000);
+		printk("gpiod_set_value_cansleep(sc132gs->reset_gpio, 1)\n");
+		}
+	if (!IS_ERR(sc132gs->csien_gpio)) {
+		gpiod_set_value_cansleep(sc132gs->csien_gpio, 1);
+		//usleep_range(10 * 1000, 20 * 1000);
+		printk("gpiod_set_value_cansleep(sc132gs->csien_gpio, 1)\n");
+		}
+
 	if (!IS_ERR(sc132gs->pwdn_gpio))
-		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1); 
+		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1);
+*/
+
+			if (!IS_ERR(sc132gs->reset_gpio))
+		gpiod_set_value_cansleep(sc132gs->reset_gpio, 0);
+
+    if (!IS_ERR(sc132gs->pwdn_gpio))
+       gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 0);
+
+	if (!IS_ERR(sc132gs->other_gpio))
+       gpiod_set_value_cansleep(sc132gs->other_gpio, 1);   
+
+
+	if (!IS_ERR(sc132gs->csien_gpio))
+       gpiod_set_value_cansleep(sc132gs->csien_gpio, 1);   
+
+    usleep_range(500, 1000);
+	if (!IS_ERR(sc132gs->reset_gpio))
+		gpiod_set_value_cansleep(sc132gs->reset_gpio, 1);
+
+	if (!IS_ERR(sc132gs->pwdn_gpio))
+		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1);
 
 	/* 8192 cycles prior to first SCCB transaction */
 	delay_us = sc132gs_cal_delay(8192);
@@ -916,9 +874,9 @@ disable_clk:
 static void __sc132gs_power_off(struct sc132gs *sc132gs)
 {
 	int ret;
-
-		if (!IS_ERR(sc132gs->pwdn_gpio))
-		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 0);	
+	return;
+	if (!IS_ERR(sc132gs->pwdn_gpio))
+		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 0);
 	clk_disable_unprepare(sc132gs->xvclk);
 	if (!IS_ERR_OR_NULL(sc132gs->pins_sleep)) {
 		ret = pinctrl_select_state(sc132gs->pinctrl,
@@ -1076,9 +1034,10 @@ static int sc132gs_set_ctrl(struct v4l2_ctrl *ctrl)
 		ret = sc132gs_set_ctrl_gain(sc132gs, ctrl->val);
 		break;
 	case V4L2_CID_VBLANK:
-		ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_VTS,
+		/*ret = sc132gs_write_reg(sc132gs->client, SC132GS_REG_VTS,
 					SC132GS_REG_VALUE_16BIT,
-					ctrl->val + sc132gs->cur_mode->height);
+					ctrl->val + sc132gs->cur_mode->height);*/
+					printk("ctrl->val=%d, sc132gs->cur_mode->height=%d tatol=%d\n",ctrl->val, sc132gs->cur_mode->height,ctrl->val + sc132gs->cur_mode->height);
 		break;
 	case V4L2_CID_TEST_PATTERN:
 		ret = sc132gs_enable_test_pattern(sc132gs, ctrl->val);
@@ -1176,6 +1135,7 @@ static int sc132gs_check_sensor_id(struct sc132gs *sc132gs,
 
 	ret = sc132gs_read_reg(client, SC132GS_REG_CHIP_ID,
 			      SC132GS_REG_VALUE_16BIT, &id);
+				  printk("the sensor id=%04x, CHIP_ID=%04x", id, CHIP_ID);
 	if (id != CHIP_ID) {
 		dev_err(dev, "Unexpected sensor id(%04x), ret(%d)\n", id, ret);
 		return -ENODEV;
@@ -1236,11 +1196,36 @@ static int sc132gs_probe(struct i2c_client *client,
 	if (IS_ERR(sc132gs->xvclk)) {
 		dev_err(dev, "Failed to get xvclk\n");
 		return -EINVAL;
-	} 
+	}
+
+	/*sc132gs->pwdn_gpio = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->pwdn_gpio))
+		dev_warn(dev, "Failed to get pwdn-gpios\n");
+
+	sc132gs->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->reset_gpio))
+		dev_warn(dev, "Failed to get reset-gpios\n");
+
+	sc132gs->csien_gpio = devm_gpiod_get(dev, "csien", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->csien_gpio))
+		dev_warn(dev, "Failed to get reset-gpios\n");*/
+
+	sc132gs->csien_gpio = devm_gpiod_get(dev, "csien", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->csien_gpio))
+		dev_warn(dev, "Failed to get csien-gpios\n");
+
+	sc132gs->other_gpio = devm_gpiod_get(dev, "other", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->other_gpio))
+		dev_warn(dev, "Failed to get other-gpios\n");
+
+	sc132gs->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+	if (IS_ERR(sc132gs->reset_gpio))
+		dev_warn(dev, "Failed to get reset-gpios\n");
 
 	sc132gs->pwdn_gpio = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_LOW);
 	if (IS_ERR(sc132gs->pwdn_gpio))
 		dev_warn(dev, "Failed to get pwdn-gpios\n");
+
 	ret = sc132gs_configure_regulators(sc132gs);
 	if (ret) {
 		dev_err(dev, "Failed to get power regulators\n");
@@ -1272,7 +1257,6 @@ static int sc132gs_probe(struct i2c_client *client,
 	ret = __sc132gs_power_on(sc132gs);
 	if (ret)
 		goto err_free_handler;
-
 
 	ret = sc132gs_check_sensor_id(sc132gs, client);
 	if (ret)
@@ -1345,7 +1329,7 @@ static int sc132gs_remove(struct i2c_client *client)
 
 	return 0;
 }
-   
+
 #if IS_ENABLED(CONFIG_OF)
 static const struct of_device_id sc132gs_of_match[] = {
 	{ .compatible = "smartsens,sc132gs" },

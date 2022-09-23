@@ -97,7 +97,7 @@
 #define SC132GS_REG_VALUE_16BIT		2
 #define SC132GS_REG_VALUE_24BIT		3
 
-#define SC132GS_NAME			"sc132gs1"
+#define SC132GS_NAME			"sc132b1"
 
 #define POWER_ALWAY_ON 1
 
@@ -813,8 +813,8 @@ static int __sc132gs_power_on(struct sc132gs *sc132gs)
 		goto disable_clk;
 	}
 
-	if (!IS_ERR(sc132gs->pwdn_gpio))
-		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1); 
+	//if (!IS_ERR(sc132gs->pwdn_gpio))
+	//	gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 1); 
 
 	/* 8192 cycles prior to first SCCB transaction */
 	delay_us = sc132gs_cal_delay(8192);
@@ -836,8 +836,8 @@ static void __sc132gs_power_off(struct sc132gs *sc132gs)
 {
 	int ret;
 
-		if (!IS_ERR(sc132gs->pwdn_gpio))
-		gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 0);	
+	//	if (!IS_ERR(sc132gs->pwdn_gpio))
+	//	gpiod_set_value_cansleep(sc132gs->pwdn_gpio, 0);	
 	clk_disable_unprepare(sc132gs->xvclk);
 	if (!IS_ERR_OR_NULL(sc132gs->pins_sleep)) {
 		ret = pinctrl_select_state(sc132gs->pinctrl,
@@ -1175,9 +1175,9 @@ static int sc132gs_probe(struct i2c_client *client,
 		dev_warn(dev, "Failed to get vi-gpios\n");
 
 
-	sc132gs->pwdn_gpio = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_LOW);
-	if (IS_ERR(sc132gs->pwdn_gpio))
-		dev_warn(dev, "Failed to get pwdn-gpios\n");
+	//sc132gs->pwdn_gpio = devm_gpiod_get(dev, "pwdn", GPIOD_OUT_LOW);
+	//if (IS_ERR(sc132gs->pwdn_gpio))
+	//	dev_warn(dev, "Failed to get pwdn-gpios\n");
 	ret = sc132gs_configure_regulators(sc132gs);
 	if (ret) {
 		dev_err(dev, "Failed to get power regulators\n");
@@ -1285,14 +1285,14 @@ static int sc132gs_remove(struct i2c_client *client)
    
 #if IS_ENABLED(CONFIG_OF)
 static const struct of_device_id sc132gs_of_match[] = {
-	{ .compatible = "smartsens,sc132gs1" },
+	{ .compatible = "smartsens,sc132b1" },
 	{},
 };
 MODULE_DEVICE_TABLE(of, sc132gs_of_match);
-#endif
+#endif 
 
 static const struct i2c_device_id sc132gs_match_id[] = {
-	{ "smartsens,sc132gs1", 0 },
+	{ "smartsens,sc132b1", 0 },
 	{ }, 
 };
 
